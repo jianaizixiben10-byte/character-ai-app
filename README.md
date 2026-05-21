@@ -3,6 +3,9 @@
 ## 概要
 AIでオリジナルキャラクターを生成し、そのキャラと会話できるアプリです。
 
+## 公開URL
+https://character-ai-app-e6d4i9azxgq8w9lqh2zuxz.streamlit.app/
+
 ## キャラクター
 名前：ちゃむ  
 性別：男の子  
