@@ -1,6 +1,37 @@
 import streamlit as st
 from openai import OpenAI
 
+st.set_page_config(
+    page_title="ちゃむAI",
+    page_icon="🐹",
+    layout="centered"
+)
+
+st.markdown("""
+<style>
+
+.stApp {
+    background-color: #FFF8F0;
+}
+
+h1 {
+    color: #5B3A29;
+    text-align: center;
+}
+
+.stTabs [data-baseweb="tab"] {
+    font-size: 18px;
+    padding: 10px;
+}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 st.title("🐹 オリジナルキャラ生成AI")
 
 if "chat_history" not in st.session_state:
@@ -23,7 +54,7 @@ st.sidebar.info("ちゃむは食いしん坊で温厚な男の子です。語尾
 api_key = st.secrets["OPENAI_API_KEY"]
 
 with tab1:
-    st.image("character_ai_app/chamu.png", width=300)
+    st.image("chamu.png", width=300)
     st.subheader("🐹 ちゃむ")
     st.write("## 🌟 キャラクタープロフィール")
     st.write("名前：ちゃむ")
