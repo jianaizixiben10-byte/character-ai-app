@@ -54,7 +54,7 @@ st.sidebar.info("ちゃむは食いしん坊で温厚な男の子です。語尾
 api_key = st.secrets["OPENAI_API_KEY"]
 
 with tab1:
-    st.image("chamu.png", width=300)
+    st.image("character_ai_app/chamu.png", width=300)
     st.subheader("🐹 ちゃむ")
     st.write("## 🌟 キャラクタープロフィール")
     st.write("名前：ちゃむ")
