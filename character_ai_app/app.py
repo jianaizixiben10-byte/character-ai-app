@@ -3,6 +3,7 @@ from openai import OpenAI
 import base64
 import os
 from datetime import datetime
+from pathlib import Path
 
 def make_image_prompt(character):
     prompt = f"""
@@ -103,7 +104,9 @@ st.sidebar.info("ちゃむは食いしん坊で温厚な男の子です。語尾
 api_key = st.secrets["OPENAI_API_KEY"]
 
 with tab1:
-    st.image("chamu.png", width=300)
+    image_path = Path(__file__).parent / "chamu.png"
+    st.image(str(image_path), width=300)
+    
     st.subheader("🐹 ちゃむ")
     st.write("## 🌟 キャラクタープロフィール")
     st.write("名前：ちゃむ")
@@ -220,7 +223,7 @@ if "character_image" in st.session_state:
 
             st.session_state["character_image"] = image_bytes
             st.success("画像を再生成しました")
-            
+
 with tab3:
     st.subheader("💬 キャラと会話する")
 
