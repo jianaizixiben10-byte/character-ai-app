@@ -1,5 +1,54 @@
 import streamlit as st
 from openai import OpenAI
+import base64
+import os
+from datetime import datetime
+
+def make_image_prompt(character):
+    prompt = f"""
+anime style original character illustration.
+
+Use the following character profile to create the image:
+
+{character}
+
+high quality,
+beautiful lighting,
+full body,
+clean background,
+anime style,
+no text,
+no watermark,
+no logo
+"""
+
+    return prompt
+
+def generate_character_image(prompt, api_key):
+    client = OpenAI(api_key=api_key)
+
+    result = client.images.generate(
+        model="gpt-image-1",
+        prompt=prompt,
+        size="1024x1024"
+    )
+
+    image_base64 = result.data[0].b64_json
+
+    image_bytes = base64.b64decode(image_base64)
+
+    return image_bytes
+
+def save_image(image_bytes, character_name="character"):
+    os.makedirs("generated_images", exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"generated_images/{character_name}_{timestamp}.png"
+
+    with open(filename, "wb") as f:
+        f.write(image_bytes)
+
+    return filename
 
 st.set_page_config(
     page_title="ちゃむAI",
@@ -54,7 +103,7 @@ st.sidebar.info("ちゃむは食いしん坊で温厚な男の子です。語尾
 api_key = st.secrets["OPENAI_API_KEY"]
 
 with tab1:
-    st.image("character_ai_app/chamu.png", width=300)
+    st.image("chamu.png", width=300)
     st.subheader("🐹 ちゃむ")
     st.write("## 🌟 キャラクタープロフィール")
     st.write("名前：ちゃむ")
@@ -120,6 +169,58 @@ with tab2:
             st.subheader("✨ 生成されたキャラクター")
             st.write(character)
 
+            image_prompt = make_image_prompt(character)
+            st.session_state["image_prompt"] = image_prompt
+
+if "image_prompt" in st.session_state:
+    st.subheader("🎨 画像生成メニュー")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("画像プロンプトを表示", key="show_image_prompt"):
+            st.write(st.session_state["image_prompt"])
+
+    with col2:
+        if st.button("画像を生成", key="generate_image"):
+            with st.spinner("画像を生成中..."):
+                image_bytes = generate_character_image(
+                    st.session_state["image_prompt"],
+                    api_key
+                )
+
+            st.session_state["character_image"] = image_bytes
+            st.success("画像を生成しました")
+
+if "character_image" in st.session_state:
+    st.subheader("🖼️ 生成されたキャラクター画像")
+
+    st.image(
+        st.session_state["character_image"],
+        use_container_width=True
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("画像を保存", key="save_image"):
+            saved_path = save_image(
+                st.session_state["character_image"]
+            )
+
+            st.success(f"画像を保存しました: {saved_path}")
+
+    with col2:
+        if st.button("画像を再生成", key="regenerate_image"):
+            with st.spinner("画像を再生成中..."):
+                image_bytes = generate_character_image(
+                    st.session_state["image_prompt"],
+                    api_key
+                )
+
+            st.session_state["character_image"] = image_bytes
+            st.success("画像を再生成しました")
+            
 with tab3:
     st.subheader("💬 キャラと会話する")
 
